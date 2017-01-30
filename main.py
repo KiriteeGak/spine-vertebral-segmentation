@@ -1,30 +1,29 @@
-# This code was the research presented in my masters thesis
-# The main idea behind sharing this is to not make someone build something from scratch
-# Contributors : Kiritee.GAK
+'''
+This code was the research presented in my masters thesis
+The main idea behind this rewriting is to not make someone build something from scratch and 
+if this is found useful and additions to make this better are always welcome
 
-# Loading images from the folder.
-# Preprocessing the images for evaluation
-# Finding the vertebrae and eliminating FP
-# Finding orientation of vertebrae in space for predicting next missing vertebrae
-# contributors, if any, can use the same casing in naming for proper flow 
-# function name in lower case and starting with an '_'(underscore) and variablew with merged word with caping in between
+Contributors : Kiritee.GAK
 
+Loading >> Preprocessing
+Finding the vertebrae and eliminating FP
+Finding orientation of vertebrae in space for predicting next missing vertebrae
+contributors, if any, can use the same casing in naming for proper flow 
+function naming in camelcasing and variable with underscore
+
+dumps:
+> N-D Array dumps for actual images/Grayscaled/Binary are present in dumps folder
+'''
+
+from utilities import *
 from preprocessing import preprocessingImage as ppi
 from preprocessing import selectingPointRepresentation as spr
+from scipy import misc, ndimage
 import os, glob, cPickle
 import numpy as np
-from scipy import misc, ndimage 
-
+ 
 def loading_images(path):
 	return [ndimage.imread(path+"/"+filename, mode="RGB") for root, dirnames, filenames in os.walk(path) for filename in filenames]
-
-def dumpAsPickle(filename, toDump):
-	with open("dumps/"+filename+".pkl", 'wb') as fid:
-			cPickle.dump(toDump, fid)
-
-def loadFromPickle(filename):
-	with open("dumps/"+filename+".pkl", 'r') as fid:
-		return cPickle.load(fid)
 
 def point_representation_vertebra():
 	pass
@@ -32,10 +31,8 @@ def point_representation_vertebra():
 def region_growing(image, point, thershold):
 	pass
 
-def main(path):
-	ppi(path).rgbToGrayscaleConversion(loadedImages)
-
-if __name__ == '__main__':
-	images_loaded = loadFromPickle("t1ImagesRaw")
-	main(images_loaded)
+def main(loaded_images):
+	pass
 	
+if __name__ == '__main__':
+	main(loadFromPickle("binaryT1eroded"))
