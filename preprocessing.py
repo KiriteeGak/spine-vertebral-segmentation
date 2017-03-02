@@ -1,12 +1,12 @@
 from PIL import Image, ImageChops
 from utilities import *
+from regionGrowing import RegionGrowing as rg
 import numpy as np
 import cv2
 from scipy.misc import *
 from scipy.ndimage.morphology import *
 
 class preprocessingImage(object):
-
 	def trimBlackBoxes(self, image_array, tol=0):
 		trimmed_image = []
 		image_array = np.array(map(list, zip(*image_array)))
@@ -28,12 +28,6 @@ class preprocessingImage(object):
 
 	def weightedAverageGrayscaleConv(self, pixel):
 		return int(0.299*pixel[0] + 0.587*pixel[1] + 0.114*pixel[2])
-
-	def padImages(self, image_array):
-		size = np.shape(image_array)
-		padded_matrix = np.zeros((size[0]+2,size[1]+2))
-		padded_matrix[1:size[0]+1,1:size[1]+1] = image_array
-		return padded_matrix
 		
 	def trimmedToBinary(self, image_array):
 		image_array = np.array(map(list, zip(*image_array)))
@@ -47,6 +41,7 @@ class preprocessingImage(object):
 		binary_converted_images = []
 		for image in image_nd_array:
 			im = self.trimBlackBoxes(image)
+			rg().regionGrowing(im,[[1,10],[20,30],[40,80],[100,100],[80,100]])\
 			binary_converted_images.append(self.trimmedToBinary(im))
 		return binary_converted_images
 
@@ -55,7 +50,17 @@ class selectingPointRepresentation(object):
 		self.image_nd_array = image_nd_array
 
 	def weightingTheImage(self, image_nd_array):
+		for row in image_nd_array:
+			weighted_row = self.localWeighting(row) + self.rowGlobalWeighting(row)
 		pass
 
+	def localWeighting(self, row, neighbors = 10):
+		paddedRow = list(np.zeros(neighbors))+row+list(np.zeros(neighbors))
+		return [np.mean(np.array(paddedRow[neighbors+i,2*neighbors+i])) for i,val in enumerate(row)]
+
+	def rowGlobalWeighting(self, row):
+		slope = 2/len(row)
+		return [abs((len(row)/2)-i)*slope for i,pixel in enumerate(row)]
+			
 	def bestRowSelection(self, listOfRows):
 		pass
