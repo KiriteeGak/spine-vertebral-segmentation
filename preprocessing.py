@@ -41,26 +41,21 @@ class preprocessingImage(object):
 		binary_converted_images = []
 		for image in image_nd_array:
 			im = self.trimBlackBoxes(image)
-			rg().regionGrowing(im,[[1,10],[20,30],[40,80],[100,100],[80,100]])\
 			binary_converted_images.append(self.trimmedToBinary(im))
 		return binary_converted_images
 
 class selectingPointRepresentation(object):
-	def __init__(self, image_nd_array):
-		self.image_nd_array = image_nd_array
 
-	def weightingTheImage(self, image_nd_array):
-		for row in image_nd_array:
-			weighted_row = self.localWeighting(row) + self.rowGlobalWeighting(row)
-		pass
+	def weightingTheImage(self, image_array):
+		return [np.array(self.localWeighting(row)) + np.array(self.rowGlobalWeighting(row)) for row in image_array]	
 
 	def localWeighting(self, row, neighbors = 10):
 		paddedRow = list(np.zeros(neighbors))+row+list(np.zeros(neighbors))
-		return [np.mean(np.array(paddedRow[neighbors+i,2*neighbors+i])) for i,val in enumerate(row)]
+		return [np.mean(np.array(paddedRow[neighbors+i : 2*neighbors+i]))/float(256) for i,val in enumerate(row)]
 
 	def rowGlobalWeighting(self, row):
 		slope = 2/len(row)
 		return [abs((len(row)/2)-i)*slope for i,pixel in enumerate(row)]
 			
-	def bestRowSelection(self, listOfRows):
+	def bestSubsequenceSelection(self, listOfRows):
 		pass
