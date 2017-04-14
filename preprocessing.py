@@ -46,16 +46,16 @@ class preprocessingImage(object):
 
 class selectingPointRepresentation(object):
 
-	def weightingTheImage(self, image_array):
-		return [np.array(self.localWeighting(row)) + np.array(self.rowGlobalWeighting(row)) for row in image_array]	
+	def _weightingTheImage(self, image_array):
+		return [np.array(self._localWeighting(row,5)) + np.array(self._rowGlobalWeighting(row)) for row in image_array]	
 
-	def localWeighting(self, row, neighbors = 10):
+	def _localWeighting(self, row, neighbors = 10):
 		paddedRow = list(np.zeros(neighbors))+row+list(np.zeros(neighbors))
 		return [np.mean(np.array(paddedRow[neighbors+i : 2*neighbors+i]))/float(256) for i,val in enumerate(row)]
 
-	def rowGlobalWeighting(self, row):
+	def _rowGlobalWeighting(self, row):
 		slope = 2/len(row)
 		return [abs((len(row)/2)-i)*slope for i,pixel in enumerate(row)]
 			
-	def bestSubsequenceSelection(self, listOfRows):
+	def _bestSubsequenceSelection(self, listOfRows):
 		pass
